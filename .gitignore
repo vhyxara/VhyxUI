@@ -8,3 +8,18 @@ coverage
 .claude/session_update.md
 .claude/decisions.md
 CLAUDE.md
+.vhyxai/local/
+.vhyxai/council/.lock
+.vhyxai/core/
+
+# Protocol files — local only
+CLAUDE.md
+.claude/
+.vhyxai/
+
+# Build artifacts — never commit
+apps/docs/out/
+apps/docs/public/pagefind/fragment/
+apps/docs/public/pagefind/index/
+apps/docs/public/pagefind/*.pf_meta
+apps/docs/public/pagefind/pagefind-entry.json
