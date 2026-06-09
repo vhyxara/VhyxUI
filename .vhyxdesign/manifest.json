@@ -1,0 +1,37 @@
+{
+  "apps": {
+    "playground": {
+      "baseUrl": "https://play.vhyxui.com",
+      "routes": [
+        {
+          "name": "home",
+          "path": "/",
+          "requires_auth": false,
+          "spec_section": "",
+          "viewport": "both"
+        },
+        {
+          "name": "button",
+          "path": "/components/button",
+          "requires_auth": false,
+          "spec_section": "",
+          "viewport": "both"
+        },
+        {
+          "name": "input",
+          "path": "/components/input",
+          "requires_auth": false,
+          "spec_section": "",
+          "viewport": "both"
+        },
+        {
+          "name": "textfield",
+          "path": "/components/textfield",
+          "requires_auth": false,
+          "spec_section": "",
+          "viewport": "both"
+        }
+      ]
+    }
+  }
+}
