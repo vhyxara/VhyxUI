@@ -250,7 +250,11 @@ function PopoverContent({
   ...rest
 }: PopoverContentProps): React.ReactPortal | null {
   const ctx = usePopoverContext('Popover.Content');
-  const [position, setPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const [position, setPosition] = useState<{ top: number; left: number; transform: string }>({
+    top: 0,
+    left: 0,
+    transform: 'translateX(-50%)',
+  });
 
   useEffect(() => {
     if (!ctx.open || !ctx.triggerRef.current) return;
@@ -259,23 +263,36 @@ function PopoverContent({
 
     let top = 0;
     let left = 0;
+    let transform: string;
 
-    if (side === 'bottom') {
-      top = rect.bottom + GAP;
-      left = rect.left + rect.width / 2;
-    } else if (side === 'top') {
-      top = rect.top - GAP;
-      left = rect.left + rect.width / 2;
-    } else if (side === 'right') {
-      top = rect.top + rect.height / 2;
-      left = rect.right + GAP;
+    if (side === 'bottom' || side === 'top') {
+      top = side === 'bottom' ? rect.bottom + GAP : rect.top - GAP;
+      if (align === 'start') {
+        left = rect.left;
+        transform = 'translateX(0)';
+      } else if (align === 'end') {
+        left = rect.right;
+        transform = 'translateX(-100%)';
+      } else {
+        left = rect.left + rect.width / 2;
+        transform = 'translateX(-50%)';
+      }
     } else {
-      top = rect.top + rect.height / 2;
-      left = rect.left - GAP;
+      left = side === 'right' ? rect.right + GAP : rect.left - GAP;
+      if (align === 'start') {
+        top = rect.top;
+        transform = 'translateY(0)';
+      } else if (align === 'end') {
+        top = rect.bottom;
+        transform = 'translateY(-100%)';
+      } else {
+        top = rect.top + rect.height / 2;
+        transform = 'translateY(-50%)';
+      }
     }
 
-    setPosition({ top, left });
-  }, [ctx.open, ctx.triggerRef, side]);
+    setPosition({ top, left, transform });
+  }, [ctx.open, ctx.triggerRef, side, align]);
 
   const setRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -304,7 +321,7 @@ function PopoverContent({
         top: position.top,
         left: position.left,
         zIndex: 450, // --vhyx-z-popover
-        transform: 'translateX(-50%)',
+        transform: position.transform,
       }}
       {...rest}
     >

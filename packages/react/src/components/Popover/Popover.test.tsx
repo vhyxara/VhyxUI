@@ -208,6 +208,75 @@ describe('Popover — accessibility (axe)', () => {
   });
 });
 
+// ─── 10. align prop ───────────────────────────────────────────────────────────
+
+describe('Popover — align prop', () => {
+  function mockTriggerRect(): void {
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      top: 100,
+      bottom: 120,
+      left: 200,
+      right: 260,
+      width: 60,
+      height: 20,
+      x: 200,
+      y: 100,
+      toJSON: () => ({}),
+    } as DOMRect);
+  }
+
+  it('align="center" (default) centers content under the trigger', async () => {
+    mockTriggerRect();
+    const user = userEvent.setup();
+    render(
+      <Popover>
+        <Popover.Trigger>Open</Popover.Trigger>
+        <Popover.Content>
+          <p>Body</p>
+        </Popover.Content>
+      </Popover>,
+    );
+    await user.click(screen.getByRole('button', { name: 'Open' }));
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveStyle({ left: '230px', transform: 'translateX(-50%)' });
+    vi.restoreAllMocks();
+  });
+
+  it('align="start" left-aligns content with the trigger', async () => {
+    mockTriggerRect();
+    const user = userEvent.setup();
+    render(
+      <Popover>
+        <Popover.Trigger>Open</Popover.Trigger>
+        <Popover.Content align="start">
+          <p>Body</p>
+        </Popover.Content>
+      </Popover>,
+    );
+    await user.click(screen.getByRole('button', { name: 'Open' }));
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveStyle({ left: '200px', transform: 'translateX(0)' });
+    vi.restoreAllMocks();
+  });
+
+  it('align="end" right-aligns content with the trigger', async () => {
+    mockTriggerRect();
+    const user = userEvent.setup();
+    render(
+      <Popover>
+        <Popover.Trigger>Open</Popover.Trigger>
+        <Popover.Content align="end">
+          <p>Body</p>
+        </Popover.Content>
+      </Popover>,
+    );
+    await user.click(screen.getByRole('button', { name: 'Open' }));
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveStyle({ left: '260px', transform: 'translateX(-100%)' });
+    vi.restoreAllMocks();
+  });
+});
+
 // ─── VhyxSeal contract ────────────────────────────────────────────────────────
 
 describe('Popover — VhyxSeal contract', () => {
