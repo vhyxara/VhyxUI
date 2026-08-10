@@ -250,7 +250,11 @@ function PopoverContent({
   ...rest
 }: PopoverContentProps): React.ReactPortal | null {
   const ctx = usePopoverContext('Popover.Content');
-  const [position, setPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const [position, setPosition] = useState<{ top: number; left: number; transform: string }>({
+    top: 0,
+    left: 0,
+    transform: 'translateX(-50%)',
+  });
 
   useEffect(() => {
     if (!ctx.open || !ctx.triggerRef.current) return;
@@ -259,6 +263,7 @@ function PopoverContent({
 
     let top = 0;
     let left = 0;
+    let transform = 'translateX(-50%)';
 
     if (side === 'bottom') {
       top = rect.bottom + GAP;
@@ -272,9 +277,16 @@ function PopoverContent({
     } else {
       top = rect.top + rect.height / 2;
       left = rect.left - GAP;
+      // `left` is only the anchor point (GAP px left of the trigger's own
+      // left edge) — the content still grows rightward from there unless
+      // shifted back by its own width, so it ends up overlapping the
+      // trigger instead of sitting to its left. translateX(-100%) pulls the
+      // content back so its *right* edge lands at `left`, without needing
+      // to measure the content's rendered width.
+      transform = 'translateX(-100%)';
     }
 
-    setPosition({ top, left });
+    setPosition({ top, left, transform });
   }, [ctx.open, ctx.triggerRef, side]);
 
   const setRef = useCallback(
@@ -304,7 +316,7 @@ function PopoverContent({
         top: position.top,
         left: position.left,
         zIndex: 450, // --vhyx-z-popover
-        transform: 'translateX(-50%)',
+        transform: position.transform,
       }}
       {...rest}
     >

@@ -189,6 +189,43 @@ describe('Popover — forwardRef', () => {
   });
 });
 
+// ─── 8b. side="left" positions content fully to the left of the trigger ──────
+
+describe('Popover — side="left" content placement', () => {
+  it("content's right edge is GAP (8px) from the trigger's left edge", async () => {
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      top: 100,
+      bottom: 120,
+      left: 200,
+      right: 260,
+      width: 60,
+      height: 20,
+      x: 200,
+      y: 100,
+      toJSON: () => ({}),
+    } as DOMRect);
+
+    const user = userEvent.setup();
+    render(
+      <Popover>
+        <Popover.Trigger>Open</Popover.Trigger>
+        <Popover.Content side="left">
+          <p>Body</p>
+        </Popover.Content>
+      </Popover>,
+    );
+    await user.click(screen.getByRole('button', { name: 'Open' }));
+    const dialog = screen.getByRole('dialog');
+
+    // `left` is the anchor point (trigger.left - GAP); translateX(-100%)
+    // pulls the content's own right edge back onto that anchor point,
+    // rather than letting the content grow rightward from it.
+    expect(dialog).toHaveStyle({ left: '192px', transform: 'translateX(-100%)' });
+
+    vi.restoreAllMocks();
+  });
+});
+
 // ─── 9. Accessibility (axe) ──────────────────────────────────────────────────
 
 describe('Popover — accessibility (axe)', () => {
